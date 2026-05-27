@@ -1,1 +1,32 @@
-<p>faculty works!</p>
+<div class="container">
+  <h2>Fakulteti</h2>
+  <button (click)="openForm()">+ Dodaj fakultet</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} fakultet</h3>
+    <input [(ngModel)]="form.name" placeholder="Naziv fakulteta" />
+    <input [(ngModel)]="form.address" placeholder="Adresa" />
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Naziv</th>
+        <th>Adresa</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let f of faculties">
+        <td>{{ f.name }}</td>
+        <td>{{ f.address }}</td>
+        <td>
+          <button (click)="openForm(f)">Izmeni</button>
+          <button (click)="delete(f.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

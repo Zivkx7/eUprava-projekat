@@ -1,1 +1,54 @@
-<p>enrollment works!</p>
+<div class="container">
+  <h2>Upisi</h2>
+
+  <div class="filter">
+    <select [(ngModel)]="selectedStudentId" (change)="loadByStudent()">
+      <option value="">-- Odaberi studenta --</option>
+      <option *ngFor="let s of students" [value]="s.id">{{ s.name }} ({{ s.indexNo }})</option>
+    </select>
+    <button (click)="showForm = true">+ Upiši studenta</button>
+  </div>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>Upiši na predmet</h3>
+    <select [(ngModel)]="form.studentId">
+      <option value="">-- Odaberi studenta --</option>
+      <option *ngFor="let s of students" [value]="s.id">{{ s.name }}</option>
+    </select>
+    <select [(ngModel)]="form.courseId">
+      <option value="">-- Odaberi predmet --</option>
+      <option *ngFor="let c of courses" [value]="c.id">{{ c.name }}</option>
+    </select>
+    <button (click)="enroll()">Upiši</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <div *ngIf="showGradeForm" class="form-card">
+    <h3>Unesi ocenu</h3>
+    <input [(ngModel)]="gradeForm.grade" type="number" min="5" max="10" placeholder="Ocena (5-10)" />
+    <button (click)="saveGrade()">Sačuvaj</button>
+    <button (click)="showGradeForm = false">Otkaži</button>
+  </div>
+
+  <table *ngIf="enrollments.length > 0">
+    <thead>
+      <tr>
+        <th>Predmet</th>
+        <th>Ocena</th>
+        <th>Datum upisa</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of enrollments">
+        <td>{{ getCourseName(e.courseId) }}</td>
+        <td>{{ e.grade || 'Nije unesena' }}</td>
+        <td>{{ e.enrolledAt | date:'dd.MM.yyyy' }}</td>
+        <td>
+          <button (click)="openGradeForm(e)">Unesi ocenu</button>
+          <button (click)="delete(e.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

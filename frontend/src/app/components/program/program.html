@@ -1,1 +1,40 @@
-<p>program works!</p>
+<div class="container">
+  <h2>Studijski programi</h2>
+  <button (click)="openForm()">+ Dodaj program</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} program</h3>
+    <input [(ngModel)]="form.name" placeholder="Naziv programa" />
+    <select [(ngModel)]="form.degree">
+      <option *ngFor="let d of degrees" [value]="d">{{ d }}</option>
+    </select>
+    <select [(ngModel)]="form.facultyId">
+      <option value="">-- Odaberi fakultet --</option>
+      <option *ngFor="let f of faculties" [value]="f.id">{{ f.name }}</option>
+    </select>
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Naziv</th>
+        <th>Stepen</th>
+        <th>Fakultet</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of programs">
+        <td>{{ p.name }}</td>
+        <td>{{ p.degree }}</td>
+        <td>{{ getFacultyName(p.facultyId) }}</td>
+        <td>
+          <button (click)="openForm(p)">Izmeni</button>
+          <button (click)="delete(p.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,1 +1,38 @@
-<p>exam works!</p>
+<div class="container">
+  <h2>Ispiti</h2>
+  <button (click)="openForm()">+ Zakaži ispit</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Zakaži' }} ispit</h3>
+    <select [(ngModel)]="form.courseId">
+      <option value="">-- Odaberi predmet --</option>
+      <option *ngFor="let c of courses" [value]="c.id">{{ c.name }}</option>
+    </select>
+    <input [(ngModel)]="form.dateTime" type="datetime-local" />
+    <input [(ngModel)]="form.room" placeholder="Sala" />
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Predmet</th>
+        <th>Datum i vreme</th>
+        <th>Sala</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of exams">
+        <td>{{ getCourseName(e.courseId) }}</td>
+        <td>{{ e.dateTime | date:'dd.MM.yyyy HH:mm' }}</td>
+        <td>{{ e.room }}</td>
+        <td>
+          <button (click)="openForm(e)">Izmeni</button>
+          <button (click)="delete(e.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

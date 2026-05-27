@@ -1,1 +1,40 @@
-<p>student works!</p>
+<div class="container">
+  <h2>Studenti</h2>
+  <button (click)="openForm()">+ Dodaj studenta</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} studenta</h3>
+    <input [(ngModel)]="form.indexNo" placeholder="Broj indeksa" />
+    <input [(ngModel)]="form.name" placeholder="Ime i prezime" />
+    <input [(ngModel)]="form.email" placeholder="Email" />
+    <select [(ngModel)]="form.status">
+      <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+    </select>
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Indeks</th>
+        <th>Ime</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of students">
+        <td>{{ s.indexNo }}</td>
+        <td>{{ s.name }}</td>
+        <td>{{ s.email }}</td>
+        <td>{{ s.status }}</td>
+        <td>
+          <button (click)="openForm(s)">Izmeni</button>
+          <button (click)="delete(s.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
