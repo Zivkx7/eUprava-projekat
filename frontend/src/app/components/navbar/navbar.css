@@ -25,3 +25,30 @@
 .navbar-links a.active {
   background-color: rgba(255,255,255,0.2);
 }
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.role-badge {
+  background-color: rgba(255,255,255,0.2);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.navbar-right button {
+  padding: 6px 14px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.navbar-right button:hover {
+  background-color: #d32f2f;
+}

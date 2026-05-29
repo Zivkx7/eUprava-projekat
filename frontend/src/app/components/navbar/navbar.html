@@ -9,4 +9,8 @@
     <a routerLink="/exams" routerLinkActive="active">Ispiti</a>
     <a routerLink="/employees" routerLinkActive="active">Zaposleni</a>
   </div>
+  <div class="navbar-right">
+    <span class="role-badge">{{ getRole() }}</span>
+    <button (click)="logout()">Odjavi se</button>
+  </div>
 </nav>

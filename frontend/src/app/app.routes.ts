@@ -6,16 +6,17 @@ import { Program } from './components/program/program';
 import { Enrollment } from './components/enrollment/enrollment';
 import { Exam } from './components/exam/exam';
 import { Employee } from './components/employee/employee';
-
- 
+import { Login } from './components/login/login';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'faculties', pathMatch: 'full' },
-  { path: 'faculties', component: Faculty },
-  { path: 'students', component: Student },
-  { path: 'programs', component: Program },
-  { path: 'courses', component: Course },
-  { path: 'enrollments', component: Enrollment },
-  { path: 'exams', component: Exam },
-  { path: 'employees', component: Employee},
+  { path: 'login', component: Login },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'faculties', component: Faculty, canActivate: [authGuard] },
+  { path: 'students', component: Student, canActivate: [authGuard] },
+  { path: 'programs', component: Program, canActivate: [authGuard] },
+  { path: 'courses', component: Course, canActivate: [authGuard] },
+  { path: 'enrollments', component: Enrollment, canActivate: [authGuard] },
+  { path: 'exams', component: Exam, canActivate: [authGuard] },
+  { path: 'employees', component: Employee, canActivate: [authGuard] },
 ];
