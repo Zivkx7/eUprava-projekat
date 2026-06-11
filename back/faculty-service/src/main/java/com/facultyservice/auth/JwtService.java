@@ -15,7 +15,7 @@ import java.util.Map;
 public class JwtService {
 
     private static final String SECRET = "fakultetServiceSecretKeyKojaJeDovoljnoDugacka123456";
-    private static final long EXPIRATION = 86400000; // 24h
+    private static final long EXPIRATION = 86400000;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());

@@ -1,0 +1,31 @@
+<div class="container">
+  <h2>Moj profil</h2>
+  <div *ngIf="loading">Učitavanje...</div>
+
+  <div *ngIf="profile && !loading" class="profile-card">
+    <div class="profile-row" *ngIf="authService.isStudent()">
+      <span class="label">Broj indeksa:</span>
+      <span>{{ profile.indexNo }}</span>
+    </div>
+    <div class="profile-row">
+      <span class="label">Ime i prezime:</span>
+      <span>{{ profile.name || profile.fullName }}</span>
+    </div>
+    <div class="profile-row">
+      <span class="label">Email:</span>
+      <span>{{ profile.email }}</span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isStudent()">
+      <span class="label">Status:</span>
+      <span class="badge">{{ profile.status }}</span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isProfessor()">
+      <span class="label">Uloga:</span>
+      <span class="badge">{{ profile.role }}</span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isStudent()">
+      <span class="label">Program:</span>
+      <span>{{ profile.programName }}</span>
+    </div>
+  </div>
+</div>

@@ -1,14 +1,19 @@
 <div class="container">
   <h2>Studenti</h2>
-  <button (click)="openForm()">+ Dodaj studenta</button>
+  <button *ngIf="authService.isAdmin()" (click)="openForm()">+ Dodaj studenta</button>
 
   <div *ngIf="showForm" class="form-card">
     <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} studenta</h3>
     <input [(ngModel)]="form.indexNo" placeholder="Broj indeksa" />
     <input [(ngModel)]="form.name" placeholder="Ime i prezime" />
     <input [(ngModel)]="form.email" placeholder="Email" />
+    <input *ngIf="!editingId" [(ngModel)]="form.password" type="password" placeholder="Lozinka" />
     <select [(ngModel)]="form.status">
       <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+    </select>
+    <select [(ngModel)]="form.programId">
+      <option value="">-- Odaberi program --</option>
+      <option *ngFor="let p of programs" [value]="p.id">{{ p.name }}</option>
     </select>
     <button (click)="save()">Sačuvaj</button>
     <button (click)="showForm = false">Otkaži</button>
@@ -21,6 +26,7 @@
         <th>Ime</th>
         <th>Email</th>
         <th>Status</th>
+        <th>Program</th>
         <th>Akcije</th>
       </tr>
     </thead>
@@ -30,9 +36,10 @@
         <td>{{ s.name }}</td>
         <td>{{ s.email }}</td>
         <td>{{ s.status }}</td>
+        <td>{{ getProgramName(s.programId) }}</td>
         <td>
-          <button (click)="openForm(s)">Izmeni</button>
-          <button (click)="delete(s.id)">Obriši</button>
+          <button *ngIf="authService.isAdmin()" (click)="openForm(s)">Izmeni</button>
+          <button *ngIf="authService.isAdmin()" (click)="delete(s.id)">Obriši</button>
         </td>
       </tr>
     </tbody>

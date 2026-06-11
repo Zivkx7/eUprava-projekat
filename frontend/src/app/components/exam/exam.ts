@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CourseService } from '../../services/course';
 import { ExamService } from '../../services/exam';
-
+import { AuthService } from '../../services/auth';
+import { NotificationService } from '../../services/notification';
 
 @Component({
   selector: 'app-exam',
@@ -19,7 +20,12 @@ export class Exam implements OnInit {
   editingId: string | null = null;
   form = { courseId: '', dateTime: '', room: '' };
 
-  constructor(private examService: ExamService, private courseService: CourseService) {}
+  constructor(
+    private examService: ExamService,
+    private courseService: CourseService,
+    public authService: AuthService,
+    private notif: NotificationService
+  ) {}
 
   ngOnInit() {
     this.load();
@@ -42,20 +48,31 @@ export class Exam implements OnInit {
   }
 
   save() {
+    if (!this.form.courseId || !this.form.dateTime || !this.form.room) {
+      this.notif.error('Sva polja su obavezna!');
+      return;
+    }
     if (this.editingId) {
       this.examService.update(this.editingId, this.form).subscribe(() => {
-        this.load(); this.showForm = false;
+        this.load();
+        this.showForm = false;
+        this.notif.success('Ispit uspešno izmenjen!');
       });
     } else {
       this.examService.create(this.form).subscribe(() => {
-        this.load(); this.showForm = false;
+        this.load();
+        this.showForm = false;
+        this.notif.success('Ispit uspešno zakazan!');
       });
     }
   }
 
   delete(id: string) {
     if (confirm('Da li ste sigurni?')) {
-      this.examService.delete(id).subscribe(() => this.load());
+      this.examService.delete(id).subscribe(() => {
+        this.load();
+        this.notif.success('Ispit uspešno obrisan!');
+      });
     }
   }
 

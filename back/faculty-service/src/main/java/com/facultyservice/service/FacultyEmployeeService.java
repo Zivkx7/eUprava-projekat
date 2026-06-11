@@ -11,4 +11,5 @@ public interface FacultyEmployeeService {
     List<FacultyEmployeeResponseDTO> getEmployeesByFacultyId(String facultyId);
     FacultyEmployeeResponseDTO updateEmployee(String id, FacultyEmployeeRequestDTO dto);
     void deleteEmployee(String id);
+    FacultyEmployeeResponseDTO getEmployeeByEmail(String email);
 }

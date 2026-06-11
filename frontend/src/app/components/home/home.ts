@@ -4,25 +4,12 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 @Component({
-  selector: 'app-navbar',
+  selector: 'app-home',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './navbar.html',
-  styleUrls: ['./navbar.css']
+  templateUrl: './home.html',
+  styleUrls: ['./home.css']
 })
-export class NavbarComponent {
+export class Home {
   constructor(public authService: AuthService, private router: Router) {}
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
-
-  getRole(): string {
-    return this.authService.getRole() || '';
-  }
-
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
-  }
 }

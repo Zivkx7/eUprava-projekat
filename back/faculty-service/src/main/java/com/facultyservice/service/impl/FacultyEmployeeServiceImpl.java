@@ -1,12 +1,15 @@
 package com.facultyservice.service.impl;
 
 import com.facultyservice.model.FacultyEmployee;
+import com.facultyservice.model.Role;
+import com.facultyservice.model.User;
 import com.facultyservice.model.dto.FacultyEmployeeRequestDTO;
 import com.facultyservice.model.dto.FacultyEmployeeResponseDTO;
 import com.facultyservice.repository.FacultyEmployeeRepository;
-import com.facultyservice.repository.FacultyRepository;
+import com.facultyservice.repository.UserRepository;
 import com.facultyservice.service.FacultyEmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +19,8 @@ import java.util.stream.Collectors;
 public class FacultyEmployeeServiceImpl implements FacultyEmployeeService {
 
     private final FacultyEmployeeRepository employeeRepository;
-    private final FacultyRepository facultyRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public FacultyEmployeeResponseDTO createEmployee(FacultyEmployeeRequestDTO dto) {
@@ -24,9 +28,15 @@ public class FacultyEmployeeServiceImpl implements FacultyEmployeeService {
         employee.setFullName(dto.getFullName());
         employee.setRole(dto.getRole());
         employee.setEmail(dto.getEmail());
-        employee.setFaculty(facultyRepository.findById(dto.getFacultyId())
-                .orElseThrow(() -> new RuntimeException("Faculty not found")));
-        return mapToDTO(employeeRepository.save(employee));
+        employeeRepository.save(employee);
+
+        User user = new User();
+        user.setUsername(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setRole(Role.PROFESSOR);
+        userRepository.save(user);
+
+        return mapToDTO(employee);
     }
 
     @Override
@@ -44,7 +54,7 @@ public class FacultyEmployeeServiceImpl implements FacultyEmployeeService {
 
     @Override
     public List<FacultyEmployeeResponseDTO> getEmployeesByFacultyId(String facultyId) {
-        return employeeRepository.findByFacultyId(facultyId)
+        return employeeRepository.findAll()
                 .stream().map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -56,8 +66,6 @@ public class FacultyEmployeeServiceImpl implements FacultyEmployeeService {
         employee.setFullName(dto.getFullName());
         employee.setRole(dto.getRole());
         employee.setEmail(dto.getEmail());
-        employee.setFaculty(facultyRepository.findById(dto.getFacultyId())
-                .orElseThrow(() -> new RuntimeException("Faculty not found")));
         return mapToDTO(employeeRepository.save(employee));
     }
 
@@ -66,13 +74,19 @@ public class FacultyEmployeeServiceImpl implements FacultyEmployeeService {
         employeeRepository.deleteById(id);
     }
 
+    @Override
+    public FacultyEmployeeResponseDTO getEmployeeByEmail(String email) {
+        FacultyEmployee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        return mapToDTO(employee);
+    }
+
     private FacultyEmployeeResponseDTO mapToDTO(FacultyEmployee employee) {
         FacultyEmployeeResponseDTO dto = new FacultyEmployeeResponseDTO();
         dto.setId(employee.getId());
         dto.setFullName(employee.getFullName());
         dto.setRole(employee.getRole());
         dto.setEmail(employee.getEmail());
-        dto.setFacultyId(employee.getFaculty().getId());
         return dto;
     }
 }

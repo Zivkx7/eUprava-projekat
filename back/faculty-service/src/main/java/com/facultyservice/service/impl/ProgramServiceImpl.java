@@ -3,7 +3,6 @@ package com.facultyservice.service.impl;
 import com.facultyservice.model.Program;
 import com.facultyservice.model.dto.ProgramRequestDTO;
 import com.facultyservice.model.dto.ProgramResponseDTO;
-import com.facultyservice.repository.FacultyRepository;
 import com.facultyservice.repository.ProgramRepository;
 import com.facultyservice.service.ProgramService;
 import lombok.RequiredArgsConstructor;
@@ -16,15 +15,12 @@ import java.util.stream.Collectors;
 public class ProgramServiceImpl implements ProgramService {
 
     private final ProgramRepository programRepository;
-    private final FacultyRepository facultyRepository;
 
     @Override
     public ProgramResponseDTO createProgram(ProgramRequestDTO dto) {
         Program program = new Program();
         program.setName(dto.getName());
         program.setDegree(dto.getDegree());
-        program.setFaculty(facultyRepository.findById(dto.getFacultyId())
-                .orElseThrow(() -> new RuntimeException("Faculty not found")));
         return mapToDTO(programRepository.save(program));
     }
 
@@ -43,7 +39,7 @@ public class ProgramServiceImpl implements ProgramService {
 
     @Override
     public List<ProgramResponseDTO> getProgramsByFacultyId(String facultyId) {
-        return programRepository.findByFacultyId(facultyId)
+        return programRepository.findAll()
                 .stream().map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -54,8 +50,6 @@ public class ProgramServiceImpl implements ProgramService {
                 .orElseThrow(() -> new RuntimeException("Program not found"));
         program.setName(dto.getName());
         program.setDegree(dto.getDegree());
-        program.setFaculty(facultyRepository.findById(dto.getFacultyId())
-                .orElseThrow(() -> new RuntimeException("Faculty not found")));
         return mapToDTO(programRepository.save(program));
     }
 
@@ -69,7 +63,6 @@ public class ProgramServiceImpl implements ProgramService {
         dto.setId(program.getId());
         dto.setName(program.getName());
         dto.setDegree(program.getDegree());
-        dto.setFacultyId(program.getFaculty().getId());
         return dto;
     }
 }

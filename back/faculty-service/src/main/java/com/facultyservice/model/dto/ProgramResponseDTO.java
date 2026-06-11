@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class ProgramResponseDTO {
     private String id;
-    private String facultyId;
     private String name;
     private String degree;
 }

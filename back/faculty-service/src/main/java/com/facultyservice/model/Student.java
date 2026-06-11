@@ -31,6 +31,10 @@ public class Student {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "program_id", nullable = false)
+    private Program program;
+    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

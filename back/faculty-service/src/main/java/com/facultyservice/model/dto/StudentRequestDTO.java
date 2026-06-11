@@ -8,4 +8,6 @@ public class StudentRequestDTO {
     private String name;
     private String email;
     private String status;
+    private String password;
+    private String programId;
 }

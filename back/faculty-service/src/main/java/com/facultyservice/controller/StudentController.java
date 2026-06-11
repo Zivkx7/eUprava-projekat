@@ -1,5 +1,6 @@
 package com.facultyservice.controller;
 
+import com.facultyservice.model.dto.CourseResponseDTO;
 import com.facultyservice.model.dto.StudentRequestDTO;
 import com.facultyservice.model.dto.StudentResponseDTO;
 import com.facultyservice.service.StudentService;
@@ -49,5 +50,13 @@ public class StudentController {
     @GetMapping("/{id}/gpa")
     public ResponseEntity<Double> getGPA(@PathVariable String id) {
         return ResponseEntity.ok(studentService.calculateGPA(id));
+    }
+    @GetMapping("/by-email")
+    public ResponseEntity<StudentResponseDTO> getStudentByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(studentService.getStudentByEmail(email));
+    }
+    @GetMapping("/{id}/courses")
+    public ResponseEntity<List<CourseResponseDTO>> getStudentCourses(@PathVariable String id) {
+        return ResponseEntity.ok(studentService.getStudentCourses(id));
     }
 }

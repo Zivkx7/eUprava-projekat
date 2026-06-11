@@ -1,6 +1,6 @@
 <div class="container">
   <h2>Ispiti</h2>
-  <button (click)="openForm()">+ Zakaži ispit</button>
+  <button *ngIf="authService.isAdmin() || authService.isProfessor()" (click)="openForm()">+ Zakaži ispit</button>
 
   <div *ngIf="showForm" class="form-card">
     <h3>{{ editingId ? 'Izmeni' : 'Zakaži' }} ispit</h3>
@@ -29,8 +29,8 @@
         <td>{{ e.dateTime | date:'dd.MM.yyyy HH:mm' }}</td>
         <td>{{ e.room }}</td>
         <td>
-          <button (click)="openForm(e)">Izmeni</button>
-          <button (click)="delete(e.id)">Obriši</button>
+          <button *ngIf="authService.isAdmin() || authService.isProfessor()" (click)="openForm(e)">Izmeni</button>
+          <button *ngIf="authService.isAdmin()" (click)="delete(e.id)">Obriši</button>
         </td>
       </tr>
     </tbody>

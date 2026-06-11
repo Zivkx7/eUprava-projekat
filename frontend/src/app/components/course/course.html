@@ -1,6 +1,6 @@
 <div class="container">
   <h2>Predmeti</h2>
-  <button (click)="openForm()">+ Dodaj predmet</button>
+<button *ngIf="authService.isAdmin()" (click)="openForm()">+ Dodaj predmet</button>
 
   <div *ngIf="showForm" class="form-card">
     <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} predmet</h3>
@@ -32,8 +32,7 @@
         <td>{{ c.ects }}</td>
         <td>{{ getProgramName(c.programId) }}</td>
         <td>
-          <button (click)="openForm(c)">Izmeni</button>
-          <button (click)="delete(c.id)">Obriši</button>
+<button *ngIf="authService.isAdmin()" (click)="openForm(c)">Izmeni</button> <button *ngIf="authService.isAdmin()" (click)="delete(c.id)">Obriši</button>
         </td>
       </tr>
     </tbody>

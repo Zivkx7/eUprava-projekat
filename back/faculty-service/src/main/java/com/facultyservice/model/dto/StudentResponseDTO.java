@@ -10,4 +10,6 @@ public class StudentResponseDTO {
     private String email;
     private String status;
     private String createdAt;
+    private String programId;
+    private String programName;
 }

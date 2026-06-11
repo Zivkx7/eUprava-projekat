@@ -32,4 +32,19 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+  isAdmin(): boolean {
+  return this.getRole() === 'ADMIN';
+}
+
+isProfessor(): boolean {
+  return this.getRole() === 'PROFESSOR';
+}
+
+isStudent(): boolean {
+  return this.getRole() === 'STUDENT';
+}
+ 
+getUsername(): string | null {
+  return localStorage.getItem('username');
+}
 }

@@ -3,7 +3,6 @@ package com.facultyservice.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
@@ -25,12 +24,6 @@ public class Faculty {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL)
-    private List<Program> programs;
-
-    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL)
-    private List<FacultyEmployee> employees;
 
     @PrePersist
     protected void onCreate() {

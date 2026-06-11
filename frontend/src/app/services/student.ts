@@ -31,4 +31,13 @@ export class StudentService {
   getGPA(id: string): Observable<number> {
     return this.http.get<number>(`${this.api}/${id}/gpa`);
   }
+  getByIndexNo(indexNo: string): Observable<any> {
+  return this.http.get<any>(`${this.api}/index/${indexNo}`);
+}
+getByEmail(email: string): Observable<any> {
+  return this.http.get<any>(`${this.api}/by-email?email=${encodeURIComponent(email)}`);
+}
+getStudentCourses(studentId: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.api}/${studentId}/courses`);
+}
 }

@@ -1,6 +1,8 @@
 package com.facultyservice.service.impl;
 
+import com.facultyservice.model.Course;
 import com.facultyservice.model.Enrollment;
+import com.facultyservice.model.Student;
 import com.facultyservice.model.dto.EnrollmentRequestDTO;
 import com.facultyservice.model.dto.EnrollmentResponseDTO;
 import com.facultyservice.repository.CourseRepository;
@@ -22,11 +24,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public EnrollmentResponseDTO enrollStudent(EnrollmentRequestDTO dto) {
+        Student student = studentRepository.findById(dto.getStudentId())
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        Course course = courseRepository.findById(dto.getCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        if (!course.getProgram().getId().equals(student.getProgram().getId())) {
+            throw new RuntimeException("Predmet nije u programu studenta!");
+        }
+
         Enrollment enrollment = new Enrollment();
-        enrollment.setStudent(studentRepository.findById(dto.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student not found")));
-        enrollment.setCourse(courseRepository.findById(dto.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found")));
+        enrollment.setStudent(student);
+        enrollment.setCourse(course);
         return mapToDTO(enrollmentRepository.save(enrollment));
     }
 

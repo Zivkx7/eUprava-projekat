@@ -14,10 +14,6 @@ public class Program {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "faculty_id", nullable = false)
-    private Faculty faculty;
-
     @Column(nullable = false)
     private String name;
 

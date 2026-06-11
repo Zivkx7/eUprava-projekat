@@ -31,4 +31,7 @@ export class EmployeeService {
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.api}/${id}`);
   }
+  getByEmail(email: string): Observable<any> {
+  return this.http.get<any>(`${this.api}/by-email?email=${encodeURIComponent(email)}`);
+}
 }

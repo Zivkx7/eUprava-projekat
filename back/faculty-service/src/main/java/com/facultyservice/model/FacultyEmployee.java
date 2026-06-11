@@ -3,6 +3,8 @@ package com.facultyservice.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -13,18 +15,30 @@ public class FacultyEmployee {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "faculty_id", nullable = false)
-    private Faculty faculty;
-
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
     @Column(nullable = false)
-    private String role; // Professor, Assistant, Admin...
+    private String role;
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @ManyToMany
+    @JoinTable(
+        name = "employee_courses",
+        joinColumns = @JoinColumn(name = "employee_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private List<Course> courses = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+        name = "employee_programs",
+        joinColumns = @JoinColumn(name = "employee_id"),
+        inverseJoinColumns = @JoinColumn(name = "program_id")
+    )
+    private List<Program> programs = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
