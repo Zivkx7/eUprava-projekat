@@ -4,6 +4,7 @@ import com.facultyservice.model.Exam;
 import com.facultyservice.model.dto.ExamRequestDTO;
 import com.facultyservice.model.dto.ExamResponseDTO;
 import com.facultyservice.repository.CourseRepository;
+import com.facultyservice.repository.ExamRegistrationRepository;
 import com.facultyservice.repository.ExamRepository;
 import com.facultyservice.service.ExamService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
     private final CourseRepository courseRepository;
+    private final ExamRegistrationRepository examRegistrationRepository;
 
     @Override
     public ExamResponseDTO createExam(ExamRequestDTO dto) {
@@ -62,6 +64,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public void deleteExam(String id) {
+        examRegistrationRepository.deleteAll(examRegistrationRepository.findByExamId(id));
         examRepository.deleteById(id);
     }
 

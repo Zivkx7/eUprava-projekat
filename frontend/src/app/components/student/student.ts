@@ -5,6 +5,7 @@ import { StudentService } from '../../services/student';
 import { AuthService } from '../../services/auth';
 import { NotificationService } from '../../services/notification';
 import { ProgramService } from '../../services/program';
+import { EmployeeService } from '../../services/employee';
 
 @Component({
   selector: 'app-student',
@@ -24,6 +25,7 @@ export class Student implements OnInit {
   constructor(
     private studentService: StudentService,
     private programService: ProgramService,
+    private employeeService: EmployeeService,
     public authService: AuthService,
     private notif: NotificationService
   ) {}
@@ -33,10 +35,16 @@ export class Student implements OnInit {
     this.programService.getAll().subscribe(d => this.programs = d);
   }
 
-  load() {
+load() {
+  if (this.authService.isProfessor()) {
+    const employeeId = localStorage.getItem('employeeId');
+    if (employeeId) {
+      this.employeeService.getStudents(employeeId).subscribe(data => this.students = data);
+    }
+  } else {
     this.studentService.getAll().subscribe(data => this.students = data);
   }
-
+}
   openForm(student?: any) {
     this.showForm = true;
     if (student) {

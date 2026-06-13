@@ -14,6 +14,30 @@
     <button (click)="showForm = false">Otkaži</button>
   </div>
 
+  <!-- Forma za dodelu predmeta i programa -->
+  <div *ngIf="showAssignForm" class="form-card assign-card">
+    <h3>Dodela — {{ assignEmployee?.fullName }}</h3>
+
+    <h4>Programi</h4>
+    <div class="checkbox-list">
+      <label *ngFor="let p of allPrograms" class="checkbox-item">
+        <input type="checkbox" [checked]="hasProgram(p.id)" (change)="toggleProgram(p.id)" />
+        {{ p.name }} ({{ p.degree }})
+      </label>
+    </div>
+
+<h4>Predmeti</h4>
+<p *ngIf="employeeProgramIds.length === 0" class="hint">Prvo dodelite program da biste videli predmete.</p>
+<div class="checkbox-list" *ngIf="employeeProgramIds.length > 0">
+  <label *ngFor="let c of getAvailableCourses()" class="checkbox-item">
+    <input type="checkbox" [checked]="hasCourse(c.id)" (change)="toggleCourse(c.id)" />
+    {{ c.name }} ({{ c.code }})
+  </label>
+</div>
+
+    <button (click)="closeAssignForm()">Zatvori</button>
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -29,6 +53,7 @@
         <td>{{ e.role }}</td>
         <td>{{ e.email }}</td>
         <td>
+          <button *ngIf="authService.isAdmin()" (click)="openAssignForm(e)">Dodeli</button>
           <button *ngIf="authService.isAdmin()" (click)="openForm(e)">Izmeni</button>
           <button *ngIf="authService.isAdmin()" (click)="delete(e.id)">Obriši</button>
         </td>

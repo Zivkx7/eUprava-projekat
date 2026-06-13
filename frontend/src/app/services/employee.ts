@@ -34,4 +34,30 @@ export class EmployeeService {
   getByEmail(email: string): Observable<any> {
   return this.http.get<any>(`${this.api}/by-email?email=${encodeURIComponent(email)}`);
 }
+addCourse(employeeId: string, courseId: string): Observable<void> {
+  return this.http.post<void>(`${this.api}/${employeeId}/courses/${courseId}`, {});
+}
+
+removeCourse(employeeId: string, courseId: string): Observable<void> {
+  return this.http.delete<void>(`${this.api}/${employeeId}/courses/${courseId}`);
+}
+
+addProgram(employeeId: string, programId: string): Observable<void> {
+  return this.http.post<void>(`${this.api}/${employeeId}/programs/${programId}`, {});
+}
+
+removeProgram(employeeId: string, programId: string): Observable<void> {
+  return this.http.delete<void>(`${this.api}/${employeeId}/programs/${programId}`);
+}
+
+getCourses(employeeId: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.api}/${employeeId}/courses`);
+}
+
+getPrograms(employeeId: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.api}/${employeeId}/programs`);
+}
+getStudents(employeeId: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.api}/${employeeId}/students`);
+}
 }

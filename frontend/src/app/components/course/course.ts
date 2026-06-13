@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth';
 import { EnrollmentService } from '../../services/enrollment';
 import { NotificationService } from '../../services/notification';
 import { StudentService } from '../../services/student';
+import { EmployeeService } from '../../services/employee';
 
 @Component({
   selector: 'app-course',
@@ -27,6 +28,7 @@ export class Course implements OnInit {
     private programService: ProgramService,
     public authService: AuthService,
     private enrollmentService: EnrollmentService,
+    private employeeService: EmployeeService,
     private studentService: StudentService,
     private notif: NotificationService
   ) {}
@@ -40,7 +42,21 @@ load() {
   if (this.authService.isStudent()) {
     const studentId = localStorage.getItem('studentId');
     if (studentId) {
-      this.studentService.getStudentCourses(studentId).subscribe(data => this.courses = data);
+      // ucitaj enrollmente da dobijemo ocene
+      this.enrollmentService.getByStudent(studentId).subscribe((enrollments: any[]) => {
+        this.studentService.getStudentCourses(studentId).subscribe(courses => {
+          // spoji predmet sa ocenom
+          this.courses = courses.map((c: any) => {
+            const enrollment = enrollments.find((e: any) => e.courseId === c.id);
+            return { ...c, grade: enrollment?.grade || null };
+          });
+        });
+      });
+    }
+  } else if (this.authService.isProfessor()) {
+    const employeeId = localStorage.getItem('employeeId');
+    if (employeeId) {
+      this.employeeService.getCourses(employeeId).subscribe(data => this.courses = data);
     }
   } else {
     this.courseService.getAll().subscribe(data => this.courses = data);

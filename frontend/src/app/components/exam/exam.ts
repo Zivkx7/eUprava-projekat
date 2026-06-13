@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CourseService } from '../../services/course';
 import { ExamService } from '../../services/exam';
+import { ExamRegistrationService } from '../../services/exam-registration';
+import { StudentService } from '../../services/student';
+import { EmployeeService } from '../../services/employee';
 import { AuthService } from '../../services/auth';
 import { NotificationService } from '../../services/notification';
 
@@ -19,21 +22,125 @@ export class Exam implements OnInit {
   showForm = false;
   editingId: string | null = null;
   form = { courseId: '', dateTime: '', room: '' };
+  gradeForm = { registrationId: '', grade: 0 };
+  showGradeForm = false;
+
+  // prijave studenta
+  myRegistrations: any[] = [];
+
+  // prikaz prijavljenih (profesor/admin)
+  showRegistrations = false;
+  selectedExam: any = null;
+  examRegistrations: any[] = [];
 
   constructor(
     private examService: ExamService,
     private courseService: CourseService,
+    private registrationService: ExamRegistrationService,
+    private studentService: StudentService,
+    private employeeService: EmployeeService,
     public authService: AuthService,
     private notif: NotificationService
   ) {}
 
   ngOnInit() {
     this.load();
-    this.courseService.getAll().subscribe(d => this.courses = d);
+    this.loadCourses();
+    if (this.authService.isStudent()) {
+      this.loadMyRegistrations();
+    }
   }
 
-  load() {
+  loadCourses() {
+    if (this.authService.isProfessor()) {
+      const employeeId = localStorage.getItem('employeeId');
+      if (employeeId) {
+        this.employeeService.getCourses(employeeId).subscribe(d => this.courses = d);
+      }
+    } else {
+      this.courseService.getAll().subscribe(d => this.courses = d);
+    }
+  }
+
+ load() {
+  if (this.authService.isStudent()) {
+    const studentId = localStorage.getItem('studentId');
+    if (studentId) {
+      this.studentService.getStudentCourses(studentId).subscribe(courses => {
+        const courseIds = courses.map((c: any) => c.id);
+        // uzmi sve prijave studenta da vidimo koje je polozio
+        this.registrationService.getByStudent(studentId).subscribe(regs => {
+          const passedCourseNames = regs
+            .filter((r: any) => r.status === 'PASSED')
+            .map((r: any) => r.courseName);
+          this.examService.getAll().subscribe(allExams => {
+            this.exams = allExams.filter((e: any) => {
+              const courseName = this.getCourseName(e.courseId);
+              // prikazi ispit samo ako je predmet upisan I nije polozen
+              return courseIds.includes(e.courseId) && !passedCourseNames.includes(courseName);
+            });
+          });
+        });
+      });
+    }
+  } else if (this.authService.isProfessor()) {
+    const employeeId = localStorage.getItem('employeeId');
+    if (employeeId) {
+      this.employeeService.getCourses(employeeId).subscribe(courses => {
+        const courseIds = courses.map((c: any) => c.id);
+        this.examService.getAll().subscribe(allExams => {
+          this.exams = allExams.filter((e: any) => courseIds.includes(e.courseId));
+        });
+      });
+    }
+  } else {
     this.examService.getAll().subscribe(data => this.exams = data);
+  }
+}
+
+  loadMyRegistrations() {
+    const studentId = localStorage.getItem('studentId');
+    if (studentId) {
+      this.registrationService.getByStudent(studentId).subscribe(d => this.myRegistrations = d);
+    }
+  }
+
+  isRegistered(examId: string): boolean {
+    return this.myRegistrations.some(r => r.examId === examId);
+  }
+
+  registerForExam(examId: string) {
+    const studentId = localStorage.getItem('studentId');
+    if (!studentId) return;
+    this.registrationService.register({ studentId, examId }).subscribe({
+      next: () => {
+        this.loadMyRegistrations();
+        this.notif.success('Uspešno ste prijavili ispit!');
+      },
+      error: () => this.notif.error('Već ste prijavljeni na ovaj ispit!')
+    });
+  }
+
+  cancelRegistration(examId: string) {
+    const reg = this.myRegistrations.find(r => r.examId === examId);
+    if (reg) {
+      this.registrationService.cancel(reg.id).subscribe(() => {
+        this.loadMyRegistrations();
+        this.notif.success('Prijava otkazana!');
+      });
+    }
+  }
+
+  viewRegistrations(exam: any) {
+    this.selectedExam = exam;
+    this.showRegistrations = true;
+    this.registrationService.getByExam(exam.id).subscribe(d => this.examRegistrations = d);
+  }
+
+  closeRegistrations() {
+    this.showRegistrations = false;
+    this.selectedExam = null;
+    this.examRegistrations = [];
   }
 
   openForm(exam?: any) {
@@ -66,6 +173,28 @@ export class Exam implements OnInit {
       });
     }
   }
+
+openGradeForm(registration: any) {
+  this.gradeForm = { registrationId: registration.id, grade: 0 };
+  this.showGradeForm = true;
+}
+
+saveGrade() {
+  if (!this.gradeForm.grade || this.gradeForm.grade < 5 || this.gradeForm.grade > 10) {
+    this.notif.error('Ocena mora biti između 5 i 10!');
+    return;
+  }
+  this.registrationService.grade(this.gradeForm.registrationId, this.gradeForm.grade).subscribe({
+    next: () => {
+      this.viewRegistrations(this.selectedExam);
+      this.showGradeForm = false;
+      this.notif.success('Ocena uspešno uneta!');
+    },
+    error: () => {
+      this.notif.error('Ocena se ne može uneti pre održavanja ispita!');
+    }
+  });
+}
 
   delete(id: string) {
     if (confirm('Da li ste sigurni?')) {

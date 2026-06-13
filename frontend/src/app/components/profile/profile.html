@@ -28,4 +28,16 @@
       <span>{{ profile.programName }}</span>
     </div>
   </div>
+  <div class="profile-row" *ngIf="authService.isProfessor() && myPrograms.length > 0">
+  <span class="label">Programi:</span>
+  <span>
+    <span *ngFor="let p of myPrograms; let last = last">{{ p.name }}{{ last ? '' : ', ' }}</span>
+  </span>
+</div>
+<div class="profile-row" *ngIf="authService.isProfessor() && myCourses.length > 0">
+  <span class="label">Predmeti:</span>
+  <span>
+    <span *ngFor="let c of myCourses; let last = last">{{ c.name }}{{ last ? '' : ', ' }}</span>
+  </span>
+</div>
 </div>

@@ -48,6 +48,7 @@ public class SecurityConfig {
             .cors(cors -> cors.and())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/internal/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

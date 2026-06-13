@@ -21,20 +21,26 @@
         <th>Šifra</th>
         <th>Naziv</th>
         <th>ECTS</th>
-        <th>Program</th>
-        <th>Akcije</th>
+      <th *ngIf="!authService.isStudent()">Program</th>
+      <th *ngIf="authService.isStudent()">Ocena</th>
+      <th *ngIf="authService.isAdmin()">Akcije</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let c of courses">
-        <td>{{ c.code }}</td>
-        <td>{{ c.name }}</td>
-        <td>{{ c.ects }}</td>
-        <td>{{ getProgramName(c.programId) }}</td>
-        <td>
-<button *ngIf="authService.isAdmin()" (click)="openForm(c)">Izmeni</button> <button *ngIf="authService.isAdmin()" (click)="delete(c.id)">Obriši</button>
-        </td>
-      </tr>
+  <tr *ngFor="let c of courses">
+      <td>{{ c.code }}</td>
+      <td>{{ c.name }}</td>
+      <td>{{ c.ects }}</td>
+      <td *ngIf="!authService.isStudent()">{{ getProgramName(c.programId) }}</td>
+      <td *ngIf="authService.isStudent()">
+        <span *ngIf="c.grade" class="grade-badge passed">{{ c.grade }} (Položen)</span>
+        <span *ngIf="!c.grade" class="grade-badge pending">Nije položen</span>
+      </td>
+      <td *ngIf="authService.isAdmin()">
+        <button (click)="openForm(c)">Izmeni</button>
+        <button (click)="delete(c.id)">Obriši</button>
+      </td>
+    </tr>
     </tbody>
   </table>
 </div>

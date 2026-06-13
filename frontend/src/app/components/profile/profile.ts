@@ -14,6 +14,8 @@ import { EmployeeService } from '../../services/employee';
 export class Profile implements OnInit {
   profile: any = null;
   loading = true;
+  myCourses: any[] = [];
+  myPrograms: any[] = [];
 
   constructor(
     private studentService: StudentService,
@@ -32,7 +34,12 @@ export class Profile implements OnInit {
       });
     } else if (this.authService.isProfessor()) {
       this.employeeService.getByEmail(username).subscribe({
-        next: (data) => { this.profile = data; this.loading = false; },
+        next: (data) => {
+          this.profile = data;
+          this.loading = false;
+          this.employeeService.getCourses(data.id).subscribe(c => this.myCourses = c);
+          this.employeeService.getPrograms(data.id).subscribe(p => this.myPrograms = p);
+        },
         error: () => this.loading = false
       });
     }
