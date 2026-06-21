@@ -1,0 +1,36 @@
+<div class="container">
+  <h2>Poslodavci</h2>
+  <button *ngIf="authService.isAdmin()" (click)="openForm()">+ Dodaj poslodavca</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} poslodavca</h3>
+    <input [(ngModel)]="form.name" placeholder="Naziv kompanije" />
+    <input [(ngModel)]="form.sector" placeholder="Sektor delatnosti" />
+    <input [(ngModel)]="form.email" placeholder="Kontakt email (za prijavu)" />
+    <input *ngIf="!editingId" [(ngModel)]="form.password" type="password" placeholder="Lozinka naloga" />
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Naziv</th>
+        <th>Sektor</th>
+        <th>Email</th>
+        <th *ngIf="authService.isAdmin()">Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of employers">
+        <td>{{ e.name }}</td>
+        <td>{{ e.sector }}</td>
+        <td>{{ e.email }}</td>
+        <td *ngIf="authService.isAdmin()">
+          <button (click)="openForm(e)">Izmeni</button>
+          <button (click)="delete(e.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

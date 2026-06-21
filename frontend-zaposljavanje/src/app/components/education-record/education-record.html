@@ -1,0 +1,57 @@
+<div class="container">
+  <h2>Obrazovni podaci</h2>
+  <button *ngIf="authService.isCandidate()" (click)="openForm()">+ Dodaj obrazovni zapis</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} obrazovni zapis</h3>
+    <input [(ngModel)]="form.facultyName" placeholder="Naziv fakulteta" />
+    <input [(ngModel)]="form.facultyId" placeholder="ID fakulteta (UUID iz Fakulteta)" />
+    <input [(ngModel)]="form.programName" placeholder="Naziv programa" />
+    <input [(ngModel)]="form.programId" placeholder="ID programa (UUID iz Fakulteta)" />
+    <input [(ngModel)]="form.studentId" placeholder="ID studenta na fakultetu (za verifikaciju/GPA)" />
+    <select [(ngModel)]="form.degree">
+      <option value="BSc">BSc</option>
+      <option value="MSc">MSc</option>
+      <option value="PhD">PhD</option>
+    </select>
+    <label>Početak studija: <input type="date" [(ngModel)]="form.startDate" /></label>
+    <label>Kraj studija: <input type="date" [(ngModel)]="form.endDate" /></label>
+    <label><input type="checkbox" [(ngModel)]="form.graduated" /> Diplomirao/la</label>
+    <label>Datum diplomiranja: <input type="date" [(ngModel)]="form.graduationDate" /></label>
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Fakultet</th>
+        <th>Program</th>
+        <th>Nivo</th>
+        <th>Diplomirao</th>
+        <th>Prosek</th>
+        <th>Verifikovano</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of records">
+        <td>{{ r.facultyName }}</td>
+        <td>{{ r.programName }}</td>
+        <td>{{ r.degree }}</td>
+        <td>{{ r.graduated ? 'Da' : 'Ne' }}</td>
+        <td>{{ r.avgGradeSnapshot ?? '-' }}</td>
+        <td>
+          <span class="badge" [ngClass]="r.verified ? 'verified' : 'unverified'">
+            {{ r.verified ? 'DA' : 'NE' }}
+          </span>
+        </td>
+        <td>
+          <button (click)="verify(r.id)">Verifikuj</button>
+          <button *ngIf="authService.isCandidate()" (click)="openForm(r)">Izmeni</button>
+          <button *ngIf="authService.isCandidate()" (click)="delete(r.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
