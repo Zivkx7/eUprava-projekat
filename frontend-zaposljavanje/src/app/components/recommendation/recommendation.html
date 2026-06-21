@@ -1,0 +1,55 @@
+<div class="container">
+  <h2>Rang lista kandidata</h2>
+
+  <div class="filter">
+    <select [(ngModel)]="selectedOfferId">
+      <option value="">-- Odaberi ponudu --</option>
+      <option *ngFor="let o of offers" [value]="o.id">{{ o.title }} ({{ o.location }})</option>
+    </select>
+    <button (click)="rank()">Rangiraj prijavljene</button>
+    <button (click)="suggest()">Predloži kandidate</button>
+  </div>
+
+  <p class="hint">Rangiranje koristi zvanični GPA preuzet sa Fakulteta (FacultyAPI.getOfficialGPA).</p>
+
+  <table *ngIf="loaded">
+    <thead>
+      <tr>
+        <th>Rang</th>
+        <th>Kandidat</th>
+        <th>Email</th>
+        <th>Zvanični GPA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of ranked">
+        <td>{{ r.rank }}</td>
+        <td>{{ r.fullName }}</td>
+        <td>{{ r.email }}</td>
+        <td>{{ r.officialGPA !== null ? r.officialGPA : 'nije dostupan' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="loaded && ranked.length === 0" class="empty">Nema kandidata za prikaz.</p>
+
+  <hr />
+
+  <h3>Verifikacija radnih mesta — zaposleni sa Fakulteta</h3>
+  <button (click)="loadFacultyEmployees()">Učitaj zaposlene sa Fakulteta</button>
+  <table *ngIf="employees.length > 0">
+    <thead>
+      <tr>
+        <th>Ime i prezime</th>
+        <th>Uloga</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of employees">
+        <td>{{ e.fullName }}</td>
+        <td>{{ e.role }}</td>
+        <td>{{ e.email }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

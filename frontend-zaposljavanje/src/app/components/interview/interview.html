@@ -1,0 +1,52 @@
+<div class="container">
+  <h2>Intervjui</h2>
+  <button (click)="openForm()">+ Zakaži intervju</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>Zakaži intervju</h3>
+    <select [(ngModel)]="form.applicationId">
+      <option value="">-- Odaberi prijavu --</option>
+      <option *ngFor="let a of applications" [value]="a.id">{{ applicationLabel(a) }}</option>
+    </select>
+    <label>Termin: <input type="datetime-local" [(ngModel)]="form.dateTime" /></label>
+    <input [(ngModel)]="form.location" placeholder="Mesto održavanja" />
+    <select [(ngModel)]="form.type">
+      <option value="in-person">Uživo</option>
+      <option value="online">Online</option>
+    </select>
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Kandidat</th>
+        <th>Ponuda</th>
+        <th>Termin</th>
+        <th>Mesto</th>
+        <th>Tip</th>
+        <th>Pozivnica</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of interviews">
+        <td>{{ i.candidateName }}</td>
+        <td>{{ i.jobOfferTitle }}</td>
+        <td>{{ i.dateTime }}</td>
+        <td>{{ i.location }}</td>
+        <td>{{ i.type }}</td>
+        <td>
+          <span class="badge" [ngClass]="i.inviteSent ? 'verified' : 'unverified'">
+            {{ i.inviteSent ? 'Poslata' : 'Nije' }}
+          </span>
+        </td>
+        <td>
+          <button (click)="sendInvite(i.id)">Pošalji pozivnicu</button>
+          <button (click)="delete(i.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

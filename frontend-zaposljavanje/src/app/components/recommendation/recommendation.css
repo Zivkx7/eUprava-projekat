@@ -1,0 +1,21 @@
+.hint {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.empty {
+  margin-top: 16px;
+  color: #888;
+}
+
+hr {
+  margin: 28px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+h3 {
+  color: #00796b;
+  margin-bottom: 12px;
+}
