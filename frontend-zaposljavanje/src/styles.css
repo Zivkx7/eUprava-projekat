@@ -1,0 +1,144 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.container h2 {
+  margin-bottom: 16px;
+  color: #00796b;
+  font-size: 24px;
+}
+
+.container > button {
+  padding: 8px 16px;
+  background-color: #00796b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.form-card {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 560px;
+}
+
+.form-card h3 {
+  color: #00796b;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-card button:first-of-type {
+  padding: 8px 16px;
+  background-color: #43a047;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-card button:last-of-type {
+  padding: 8px 16px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+table th {
+  background-color: #00796b;
+  color: white;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #e0f2f1;
+}
+
+table td button {
+  padding: 5px 12px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  background-color: #00796b;
+  color: white;
+}
+
+table td button:last-child {
+  background-color: #e53935;
+}
+
+.filter {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter input,
+.filter select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: white;
+  background-color: #607d8b;
+}
+.badge.SUBMITTED { background-color: #1e88e5; }
+.badge.INTERVIEW { background-color: #fb8c00; }
+.badge.OFFER { background-color: #43a047; }
+.badge.REJECTED { background-color: #e53935; }
+.badge.verified { background-color: #43a047; }
+.badge.unverified { background-color: #9e9e9e; }

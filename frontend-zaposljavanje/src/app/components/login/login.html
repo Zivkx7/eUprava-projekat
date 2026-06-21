@@ -1,0 +1,14 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>💼 Služba za zapošljavanje</h2>
+    <p class="subtitle">Prijavite se na sistem</p>
+
+    <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+    <input [(ngModel)]="form.username" placeholder="Korisničko ime (email)" />
+    <input [(ngModel)]="form.password" type="password" placeholder="Lozinka" />
+    <button (click)="login()">Prijavi se</button>
+
+    <p class="hint">Demo admin: admin&#64;zaposljavanje.rs / admin</p>
+  </div>
+</div>

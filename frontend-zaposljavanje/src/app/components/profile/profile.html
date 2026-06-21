@@ -1,0 +1,27 @@
+<div class="container">
+  <h2>Moj profil</h2>
+
+  <div class="profile-card">
+    <p><strong>Korisničko ime:</strong> {{ authService.getUsername() }}</p>
+    <p><strong>Uloga:</strong> {{ authService.getRole() }}</p>
+  </div>
+
+  <div *ngIf="candidate" class="profile-card">
+    <h3>Podaci kandidata</h3>
+    <p><strong>Ime i prezime:</strong> {{ candidate.fullName }}</p>
+    <p><strong>Email:</strong> {{ candidate.email }}</p>
+    <button (click)="generateCV()">Generiši CV</button>
+  </div>
+
+  <div *ngIf="cv" class="profile-card">
+    <h3>CV</h3>
+    <pre>{{ cv.summary }}</pre>
+  </div>
+
+  <div *ngIf="employer" class="profile-card">
+    <h3>Podaci poslodavca</h3>
+    <p><strong>Naziv:</strong> {{ employer.name }}</p>
+    <p><strong>Sektor:</strong> {{ employer.sector }}</p>
+    <p><strong>Email:</strong> {{ employer.email }}</p>
+  </div>
+</div>

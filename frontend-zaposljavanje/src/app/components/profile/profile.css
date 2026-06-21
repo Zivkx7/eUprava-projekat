@@ -1,0 +1,37 @@
+.profile-card {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  max-width: 560px;
+}
+
+.profile-card h3 {
+  color: #00796b;
+  margin-bottom: 10px;
+}
+
+.profile-card p {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.profile-card button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #00796b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.profile-card pre {
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 13px;
+  background: white;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
