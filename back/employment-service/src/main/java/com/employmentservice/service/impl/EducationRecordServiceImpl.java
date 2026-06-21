@@ -1,9 +1,11 @@
 package com.employmentservice.service.impl;
 
+import com.employmentservice.client.FacultyClient;
 import com.employmentservice.model.Candidate;
 import com.employmentservice.model.EducationRecord;
 import com.employmentservice.model.dto.EducationRecordRequestDTO;
 import com.employmentservice.model.dto.EducationRecordResponseDTO;
+import com.employmentservice.model.dto.FacultyGpaDTO;
 import com.employmentservice.repository.CandidateRepository;
 import com.employmentservice.repository.EducationRecordRepository;
 import com.employmentservice.service.EducationRecordService;
@@ -19,6 +21,7 @@ public class EducationRecordServiceImpl implements EducationRecordService {
 
     private final EducationRecordRepository educationRecordRepository;
     private final CandidateRepository candidateRepository;
+    private final FacultyClient facultyClient;
 
     @Override
     public EducationRecordResponseDTO createEducationRecord(EducationRecordRequestDTO dto) {
@@ -56,6 +59,42 @@ public class EducationRecordServiceImpl implements EducationRecordService {
     @Override
     public void deleteEducationRecord(String id) {
         educationRecordRepository.deleteById(id);
+    }
+
+    @Override
+    public EducationRecordResponseDTO verify(String id) {
+        EducationRecord record = findEntity(id);
+        applyVerification(record);
+        return mapToDTO(educationRecordRepository.save(record));
+    }
+
+    @Override
+    public List<EducationRecordResponseDTO> verifyByCandidate(String candidateId) {
+        List<EducationRecord> records = educationRecordRepository.findByCandidateId(candidateId);
+        records.forEach(this::applyVerification);
+        educationRecordRepository.saveAll(records);
+        return records.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    /**
+     * Proverava obrazovni zapis kod Fakulteta preko FacultyAPI.getOfficialGPA.
+     * Uspešan odgovor (student postoji) označava zapis kao verifikovan i
+     * upisuje zvanični prosek u avgGradeSnapshot.
+     */
+    private void applyVerification(EducationRecord record) {
+        if (record.getStudentId() == null || record.getStudentId().isBlank()) {
+            record.setVerified(false);
+            return;
+        }
+        FacultyGpaDTO gpa = facultyClient.getOfficialGPA(record.getStudentId());
+        if (gpa != null && gpa.getStudentId() != null) {
+            record.setVerified(true);
+            if (gpa.getOfficialGPA() != null) {
+                record.setAvgGradeSnapshot(gpa.getOfficialGPA());
+            }
+        } else {
+            record.setVerified(false);
+        }
     }
 
     private void applyDto(EducationRecord record, EducationRecordRequestDTO dto) {

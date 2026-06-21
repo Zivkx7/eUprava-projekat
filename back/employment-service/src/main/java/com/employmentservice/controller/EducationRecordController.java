@@ -45,4 +45,10 @@ public class EducationRecordController {
         educationRecordService.deleteEducationRecord(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Verifikacija obrazovnog zapisa sa Fakultetom
+    @PostMapping("/{id}/verify")
+    public ResponseEntity<EducationRecordResponseDTO> verify(@PathVariable String id) {
+        return ResponseEntity.ok(educationRecordService.verify(id));
+    }
 }

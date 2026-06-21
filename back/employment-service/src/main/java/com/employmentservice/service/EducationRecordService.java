@@ -11,4 +11,8 @@ public interface EducationRecordService {
     List<EducationRecordResponseDTO> getByCandidate(String candidateId);
     EducationRecordResponseDTO updateEducationRecord(String id, EducationRecordRequestDTO dto);
     void deleteEducationRecord(String id);
+
+    // Verifikacija obrazovanja sa Fakultetom (poziva FacultyAPI.getOfficialGPA)
+    EducationRecordResponseDTO verify(String id);
+    List<EducationRecordResponseDTO> verifyByCandidate(String candidateId);
 }

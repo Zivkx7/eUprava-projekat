@@ -9,6 +9,7 @@ import com.employmentservice.repository.ApplicationRepository;
 import com.employmentservice.repository.CandidateRepository;
 import com.employmentservice.repository.JobOfferRepository;
 import com.employmentservice.service.ApplicationService;
+import com.employmentservice.service.EducationRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -21,6 +22,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final CandidateRepository candidateRepository;
     private final JobOfferRepository jobOfferRepository;
+    private final EducationRecordService educationRecordService;
 
     @Override
     public ApplicationResponseDTO apply(ApplicationRequestDTO dto) {
@@ -33,7 +35,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setCandidate(candidate);
         application.setJobOffer(offer);
         application.setStatus("SUBMITTED");
-        return mapToDTO(applicationRepository.save(application));
+        Application saved = applicationRepository.save(application);
+
+        // Prijava na ponudu automatski inicira verifikaciju obrazovnih
+        // podataka kandidata sa Fakultetom (zavisna funkcija).
+        educationRecordService.verifyByCandidate(candidate.getId());
+
+        return mapToDTO(saved);
     }
 
     @Override
