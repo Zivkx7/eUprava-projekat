@@ -5,7 +5,7 @@ import com.employmentservice.model.Candidate;
 import com.employmentservice.model.EducationRecord;
 import com.employmentservice.model.dto.EducationRecordRequestDTO;
 import com.employmentservice.model.dto.EducationRecordResponseDTO;
-import com.employmentservice.model.dto.FacultyGpaDTO;
+import com.employmentservice.model.dto.StudentVerificationDTO;
 import com.employmentservice.repository.CandidateRepository;
 import com.employmentservice.repository.EducationRecordRepository;
 import com.employmentservice.service.EducationRecordService;
@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EducationRecordServiceImpl implements EducationRecordService {
+
+    // Sistem radi sa jednim fakultetom — naziv je fiksna labela.
+    private static final String FACULTY_NAME = "Fakultet tehničkih nauka, Novi Sad";
 
     private final EducationRecordRepository educationRecordRepository;
     private final CandidateRepository candidateRepository;
@@ -77,20 +80,24 @@ public class EducationRecordServiceImpl implements EducationRecordService {
     }
 
     /**
-     * Proverava obrazovni zapis kod Fakulteta preko FacultyAPI.getOfficialGPA.
-     * Uspešan odgovor (student postoji) označava zapis kao verifikovan i
-     * upisuje zvanični prosek u avgGradeSnapshot.
+     * Verifikuje zapis kod Fakulteta preko broja indeksa i studentskog mejla.
+     * Pri uspehu označava zapis kao verifikovan i popunjava zvanične podatke
+     * (program, nivo, status diplomiranja, prosek) iz odgovora Fakulteta.
      */
     private void applyVerification(EducationRecord record) {
-        if (record.getStudentId() == null || record.getStudentId().isBlank()) {
+        if (isBlank(record.getIndexNo()) || isBlank(record.getStudentEmail())) {
             record.setVerified(false);
             return;
         }
-        FacultyGpaDTO gpa = facultyClient.getOfficialGPA(record.getStudentId());
-        if (gpa != null && gpa.getStudentId() != null) {
+        StudentVerificationDTO v = facultyClient.verifyStudent(record.getIndexNo(), record.getStudentEmail());
+        if (v != null && v.isVerified()) {
             record.setVerified(true);
-            if (gpa.getOfficialGPA() != null) {
-                record.setAvgGradeSnapshot(gpa.getOfficialGPA());
+            record.setFacultyStudentId(v.getStudentId());
+            record.setProgramName(v.getProgramName());
+            record.setDegree(v.getDegree());
+            record.setGraduated(v.isGraduated());
+            if (v.getOfficialGPA() != null) {
+                record.setAvgGradeSnapshot(v.getOfficialGPA());
             }
         } else {
             record.setVerified(false);
@@ -101,24 +108,24 @@ public class EducationRecordServiceImpl implements EducationRecordService {
         Candidate candidate = candidateRepository.findById(dto.getCandidateId())
                 .orElseThrow(() -> new RuntimeException("Candidate not found"));
         record.setCandidate(candidate);
-        record.setFacultyId(dto.getFacultyId());
-        record.setFacultyName(dto.getFacultyName());
-        record.setProgramId(dto.getProgramId());
-        record.setProgramName(dto.getProgramName());
-        record.setStudentId(dto.getStudentId());
-        record.setDegree(dto.getDegree());
+        record.setIndexNo(dto.getIndexNo());
+        record.setStudentEmail(dto.getStudentEmail());
         record.setStartDate(parseDate(dto.getStartDate()));
         record.setEndDate(parseDate(dto.getEndDate()));
-        record.setGraduated(dto.isGraduated());
-        record.setGraduationDate(parseDate(dto.getGraduationDate()));
-        record.setAvgGradeSnapshot(dto.getAvgGradeSnapshot());
+        record.setFacultyName(FACULTY_NAME);
+        // Izmenom indeksa/mejla zapis prestaje da bude verifikovan dok se ponovo ne proveri.
+        record.setVerified(false);
     }
 
     private LocalDate parseDate(String value) {
-        if (value == null || value.isBlank()) {
+        if (isBlank(value)) {
             return null;
         }
         return LocalDate.parse(value);
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 
     private EducationRecord findEntity(String id) {
@@ -133,16 +140,15 @@ public class EducationRecordServiceImpl implements EducationRecordService {
             dto.setCandidateId(record.getCandidate().getId());
             dto.setCandidateName(record.getCandidate().getFullName());
         }
-        dto.setFacultyId(record.getFacultyId());
+        dto.setIndexNo(record.getIndexNo());
+        dto.setStudentEmail(record.getStudentEmail());
         dto.setFacultyName(record.getFacultyName());
-        dto.setProgramId(record.getProgramId());
+        dto.setFacultyStudentId(record.getFacultyStudentId());
         dto.setProgramName(record.getProgramName());
-        dto.setStudentId(record.getStudentId());
         dto.setDegree(record.getDegree());
+        dto.setGraduated(record.isGraduated());
         dto.setStartDate(record.getStartDate() != null ? record.getStartDate().toString() : null);
         dto.setEndDate(record.getEndDate() != null ? record.getEndDate().toString() : null);
-        dto.setGraduated(record.isGraduated());
-        dto.setGraduationDate(record.getGraduationDate() != null ? record.getGraduationDate().toString() : null);
         dto.setAvgGradeSnapshot(record.getAvgGradeSnapshot());
         dto.setVerified(record.isVerified());
         return dto;

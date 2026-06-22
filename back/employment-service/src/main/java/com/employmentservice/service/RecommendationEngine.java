@@ -4,8 +4,8 @@ import com.employmentservice.client.FacultyClient;
 import com.employmentservice.model.Application;
 import com.employmentservice.model.Candidate;
 import com.employmentservice.model.EducationRecord;
-import com.employmentservice.model.dto.FacultyGpaDTO;
 import com.employmentservice.model.dto.RankedCandidateDTO;
+import com.employmentservice.model.dto.StudentVerificationDTO;
 import com.employmentservice.repository.ApplicationRepository;
 import com.employmentservice.repository.CandidateRepository;
 import com.employmentservice.repository.EducationRecordRepository;
@@ -69,13 +69,17 @@ public class RecommendationEngine {
         return ranked;
     }
 
-    /** Preuzima zvanični GPA kandidata sa Fakulteta na osnovu njegovih obrazovnih zapisa. */
+    /**
+     * Preuzima zvanični GPA kandidata sa Fakulteta na osnovu njegovih obrazovnih zapisa.
+     * Verifikacija ide preko broja indeksa i studentskog mejla.
+     */
     private Double resolveOfficialGpa(String candidateId) {
         for (EducationRecord record : educationRecordRepository.findByCandidateId(candidateId)) {
-            if (record.getStudentId() != null) {
-                FacultyGpaDTO gpa = facultyClient.getOfficialGPA(record.getStudentId());
-                if (gpa != null && gpa.getOfficialGPA() != null) {
-                    return gpa.getOfficialGPA();
+            if (record.getIndexNo() != null && record.getStudentEmail() != null) {
+                StudentVerificationDTO v = facultyClient.verifyStudent(
+                        record.getIndexNo(), record.getStudentEmail());
+                if (v != null && v.isVerified() && v.getOfficialGPA() != null) {
+                    return v.getOfficialGPA();
                 }
             }
         }

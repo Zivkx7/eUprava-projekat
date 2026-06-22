@@ -17,39 +17,36 @@ public class EducationRecord {
     @JoinColumn(name = "candidate_id", nullable = false)
     private Candidate candidate;
 
-    @Column(name = "faculty_id")
-    private String facultyId;        // referenca na fakultet (UUID iz Fakulteta)
+    // --- Podaci koje unosi kandidat (ključ za verifikaciju kod Fakulteta) ---
+    @Column(name = "index_no")
+    private String indexNo;          // broj indeksa studenta
 
+    @Column(name = "student_email")
+    private String studentEmail;     // studentski mejl
+
+    @Column(name = "start_date")
+    private LocalDate startDate;      // opciono — period studija
+
+    @Column(name = "end_date")
+    private LocalDate endDate;        // opciono
+
+    // Sistem radi sa jednim fakultetom (FTN, Novi Sad) — naziv je konstanta/labela.
     @Column(name = "faculty_name")
     private String facultyName;
 
-    @Column(name = "program_id")
-    private String programId;        // referenca na studijski program (UUID iz Fakulteta)
+    // --- Polja koja popunjava Fakultet pri verifikaciji (zvanični podaci) ---
+    @Column(name = "faculty_student_id")
+    private String facultyStudentId; // interni UUID studenta na Fakultetu
 
     @Column(name = "program_name")
     private String programName;
 
-    // Referenca na studenta u mikroservisu Fakultet — koristi se za verifikaciju
-    // obrazovanja i preuzimanje zvaničnog GPA (FacultyAPI.getOfficialGPA).
-    @Column(name = "student_id")
-    private String studentId;
-
-    private String degree;           // BSc, MSc, PhD, itd.
-
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    @Column(name = "end_date")
-    private LocalDate endDate;
+    private String degree;           // BSc, MSc, PhD
 
     private boolean graduated;
 
-    @Column(name = "graduation_date")
-    private LocalDate graduationDate;
-
-    // Lokalni snimak proseka (zvanično ide preko FacultyAPI)
     @Column(name = "avg_grade_snapshot")
-    private Double avgGradeSnapshot;
+    private Double avgGradeSnapshot;  // zvanični prosek (GPA) sa Fakulteta
 
     // Rezultat verifikacije obrazovanja sa Fakultetom
     private boolean verified;

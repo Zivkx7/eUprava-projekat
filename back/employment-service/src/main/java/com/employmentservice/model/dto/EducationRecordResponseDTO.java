@@ -7,16 +7,15 @@ public class EducationRecordResponseDTO {
     private String id;
     private String candidateId;
     private String candidateName;
-    private String facultyId;
+    private String indexNo;
+    private String studentEmail;
     private String facultyName;
-    private String programId;
+    private String facultyStudentId;
     private String programName;
-    private String studentId;
     private String degree;
+    private boolean graduated;
     private String startDate;
     private String endDate;
-    private boolean graduated;
-    private String graduationDate;
     private Double avgGradeSnapshot;
     private boolean verified;
 }
