@@ -26,9 +26,7 @@ export class EducationRecord implements OnInit {
   emptyForm() {
     return {
       candidateId: localStorage.getItem('candidateId') || '',
-      facultyId: '', facultyName: '', programId: '', programName: '',
-      studentId: '', degree: 'BSc', startDate: '', endDate: '',
-      graduated: false, graduationDate: '', avgGradeSnapshot: null
+      indexNo: '', studentEmail: '', startDate: '', endDate: ''
     };
   }
 
@@ -47,7 +45,13 @@ export class EducationRecord implements OnInit {
     this.showForm = true;
     if (record) {
       this.editingId = record.id;
-      this.form = { ...record };
+      this.form = {
+        candidateId: record.candidateId,
+        indexNo: record.indexNo,
+        studentEmail: record.studentEmail,
+        startDate: record.startDate || '',
+        endDate: record.endDate || ''
+      };
     } else {
       this.editingId = null;
       this.form = this.emptyForm();
@@ -55,8 +59,8 @@ export class EducationRecord implements OnInit {
   }
 
   save() {
-    if (!this.form.candidateId || !this.form.facultyName || !this.form.degree) {
-      alert('Kandidat, naziv fakulteta i nivo studija su obavezni!');
+    if (!this.form.candidateId || !this.form.indexNo || !this.form.studentEmail) {
+      alert('Broj indeksa i studentski mejl su obavezni!');
       return;
     }
     const req = this.editingId
@@ -77,8 +81,10 @@ export class EducationRecord implements OnInit {
   verify(id: string) {
     this.educationService.verify(id).subscribe((res) => {
       alert(res.verified
-        ? 'Obrazovanje verifikovano kod Fakulteta. Zvanični prosek: ' + (res.avgGradeSnapshot ?? 'N/A')
-        : 'Verifikacija nije uspela (student nije pronađen ili Fakultet nedostupan).');
+        ? 'Obrazovanje verifikovano kod Fakulteta.\nProgram: ' + (res.programName || '-') +
+          ', nivo: ' + (res.degree || '-') +
+          ', zvanični prosek: ' + (res.avgGradeSnapshot ?? 'N/A')
+        : 'Verifikacija nije uspela — proverite broj indeksa i studentski mejl (moraju se poklapati sa Fakultetom).');
       this.load();
     });
   }
