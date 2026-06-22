@@ -62,10 +62,18 @@ Podrazumevani admin nalog (kreira se automatski): **admin@zaposljavanje.rs / adm
 | | `/api/recommendations/faculty-employees` | lista zaposlenih sa Fakulteta |
 
 ## Integracija sa Fakultetom (`/internal`)
-`FacultyClient` poziva REST endpointe Fakulteta:
-- `GET /internal/gpa/{studentId}` — zvanični GPA studenta (verifikacija + rangiranje)
-- `GET /internal/employees` — lista zaposlenih (verifikacija radnih mesta)
+Sistem radi sa **jednim fakultetom** (FTN, Novi Sad). Verifikacija studenta ide preko
+**broja indeksa i studentskog mejla** (ne preko UUID-a), uz zajednički tajni ključ
+`X-Internal-Key` (`faculty.internal.key`, mora biti isti kod oba servisa).
 
-**Tok:** kada se kandidat prijavi na ponudu (`POST /api/applications`), automatski se
-pokreće verifikacija svih njegovih obrazovnih zapisa kod Fakulteta; `RecommendationEngine`
-zatim koristi zvanični GPA za formiranje rang liste za konkretnu ponudu.
+`FacultyClient` poziva:
+- `POST /internal/students/verify` — telo `{ indexNo, email }`; vraća zvanične podatke
+  studenta (`verified, studentId, name, programName, degree, graduated, status, officialGPA`)
+  ako se indeks i mejl poklope. Koristi se za verifikaciju obrazovanja i rangiranje.
+- `GET /internal/employees` — lista zaposlenih (verifikacija radnih mesta).
+
+**Tok:** kandidat u obrazovni zapis unese samo **broj indeksa i studentski mejl**. Pri
+verifikaciji (ručno ili automatski pri prijavi na ponudu) Služba poziva Fakultet, koji
+vraća zvanične podatke — oni se upisuju u zapis (`verified = true`, program/nivo/prosek).
+`RecommendationEngine` zatim koristi zvanični GPA za rang listu; kandidati bez dostupnog
+GPA idu na dno liste.
