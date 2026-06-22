@@ -1,5 +1,6 @@
 <div class="container">
   <h2>Studenti</h2>
+  <input class="search-box" [(ngModel)]="searchTerm" placeholder="🔍 Pretraži po imenu, indeksu ili emailu..." />
   <button *ngIf="authService.isAdmin()" (click)="openForm()">+ Dodaj studenta</button>
 
   <div *ngIf="showForm" class="form-card">
@@ -31,7 +32,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let s of students">
+      <tr *ngFor="let s of filteredStudents">
         <td>{{ s.indexNo }}</td>
         <td>{{ s.name }}</td>
         <td>{{ s.email }}</td>

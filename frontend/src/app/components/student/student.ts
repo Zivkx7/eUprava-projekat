@@ -18,6 +18,7 @@ export class Student implements OnInit {
   students: any[] = [];
   programs: any[] = [];
   showForm = false;
+  searchTerm = '';
   editingId: string | null = null;
   form = { indexNo: '', name: '', email: '', status: 'ACTIVE', password: '', programId: '' };
   statuses = ['ACTIVE', 'GRADUATED', 'SUSPENDED'];
@@ -44,6 +45,15 @@ load() {
   } else {
     this.studentService.getAll().subscribe(data => this.students = data);
   }
+}
+get filteredStudents() {
+  if (!this.searchTerm) return this.students;
+  const term = this.searchTerm.toLowerCase();
+  return this.students.filter(s =>
+    s.name.toLowerCase().includes(term) ||
+    s.indexNo.toLowerCase().includes(term) ||
+    s.email.toLowerCase().includes(term)
+  );
 }
   openForm(student?: any) {
     this.showForm = true;

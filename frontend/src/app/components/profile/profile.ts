@@ -14,6 +14,7 @@ import { EmployeeService } from '../../services/employee';
 export class Profile implements OnInit {
   profile: any = null;
   loading = true;
+  gpa: number | null = null;
   myCourses: any[] = [];
   myPrograms: any[] = [];
 
@@ -27,11 +28,15 @@ export class Profile implements OnInit {
     const username = this.authService.getUsername();
     if (!username) return;
 
-    if (this.authService.isStudent()) {
-      this.studentService.getByEmail(username).subscribe({
-        next: (data) => { this.profile = data; this.loading = false; },
-        error: () => this.loading = false
-      });
+if (this.authService.isStudent()) {
+  this.studentService.getByEmail(username).subscribe({
+    next: (data) => {
+      this.profile = data;
+      this.loading = false;
+      this.studentService.getGPA(data.id).subscribe(g => this.gpa = g);
+    },
+    error: () => this.loading = false
+  });
     } else if (this.authService.isProfessor()) {
       this.employeeService.getByEmail(username).subscribe({
         next: (data) => {
