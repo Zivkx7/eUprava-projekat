@@ -1,0 +1,34 @@
+<div class="container">
+  <h2>Studijski programi</h2>
+  <button *ngIf="authService.isAdmin()" (click)="openForm()">+ Dodaj program</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} program</h3>
+    <input [(ngModel)]="form.name" placeholder="Naziv programa" />
+    <select [(ngModel)]="form.degree">
+      <option *ngFor="let d of degrees" [value]="d">{{ d }}</option>
+    </select>
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Naziv</th>
+        <th>Stepen</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of programs">
+        <td>{{ p.name }}</td>
+        <td>{{ p.degree }}</td>
+        <td>
+          <button *ngIf="authService.isAdmin()" (click)="openForm(p)">Izmeni</button>
+          <button *ngIf="authService.isAdmin()" (click)="delete(p.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

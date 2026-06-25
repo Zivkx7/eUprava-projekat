@@ -1,0 +1,17 @@
+<nav class="navbar">
+  <div class="navbar-brand">🎓 FTN</div>
+  <div class="navbar-links" *ngIf="isLoggedIn()">
+    <a routerLink="/home" routerLinkActive="active">Početna</a>
+    <a *ngIf="authService.isAdmin() || authService.isProfessor()" routerLink="/students" routerLinkActive="active">Studenti</a>
+    <a *ngIf="authService.isAdmin()" routerLink="/programs" routerLinkActive="active">Programi</a>
+    <a *ngIf="!authService.isProfessor()" routerLink="/courses" routerLinkActive="active">Predmeti</a>
+    <a *ngIf="authService.isAdmin()" routerLink="/enrollments" routerLinkActive="active">Upisi</a>
+    <a routerLink="/exams" routerLinkActive="active">Ispiti</a>
+    <a *ngIf="authService.isAdmin()" routerLink="/employees" routerLinkActive="active">Zaposleni</a>
+    <a *ngIf="authService.isStudent() || authService.isProfessor()" routerLink="/profile" routerLinkActive="active">Moj profil</a>
+  </div>
+  <div class="navbar-right" *ngIf="isLoggedIn()">
+    <span class="role-badge">{{ getRole() }}</span>
+    <button (click)="logout()">Odjavi se</button>
+  </div>
+</nav>

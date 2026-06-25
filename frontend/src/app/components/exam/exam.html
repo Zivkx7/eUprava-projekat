@@ -1,0 +1,78 @@
+<div class="container">
+  <h2>Ispiti</h2>
+  <button *ngIf="authService.isAdmin() || authService.isProfessor()" (click)="openForm()">+ Zakaži ispit</button>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Zakaži' }} ispit</h3>
+    <select [(ngModel)]="form.courseId">
+      <option value="">-- Odaberi predmet --</option>
+      <option *ngFor="let c of courses" [value]="c.id">{{ c.name }}</option>
+    </select>
+    <input [(ngModel)]="form.dateTime" type="datetime-local" />
+    <input [(ngModel)]="form.room" placeholder="Sala" />
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <!-- Prikaz prijavljenih studenata (profesor/admin) -->
+  <div *ngIf="showRegistrations" class="form-card">
+    <h3>Prijavljeni — {{ getCourseName(selectedExam?.courseId) }}</h3>
+
+    <div *ngIf="showGradeForm" class="grade-box">
+    <h4>Unesi ocenu</h4>
+    <input [(ngModel)]="gradeForm.grade" type="number" min="5" max="10" placeholder="Ocena (5-10)" />
+    <button (click)="saveGrade()">Sačuvaj</button>
+    <button (click)="showGradeForm = false">Otkaži</button>
+    </div>
+
+    <table *ngIf="examRegistrations.length > 0">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Status</th>
+          <th>Datum prijave</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of examRegistrations">
+          <td>{{ r.studentName }}</td>
+          <td>{{ r.status }}</td>
+          <td>{{ r.registeredAt | date:'dd.MM.yyyy' }}</td>
+          <td>
+            <button *ngIf="r.status === 'REGISTERED'" (click)="openGradeForm(r)">Unesi ocenu</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="examRegistrations.length === 0">Nema prijavljenih studenata.</p>
+    <button (click)="closeRegistrations()">Zatvori</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Predmet</th>
+        <th>Datum i vreme</th>
+        <th>Sala</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of exams">
+        <td>{{ getCourseName(e.courseId) }}</td>
+        <td>{{ e.dateTime | date:'dd.MM.yyyy HH:mm' }}</td>
+        <td>{{ e.room }}</td>
+        <td>
+          <!-- Student akcije -->
+          <button *ngIf="authService.isStudent() && !isRegistered(e.id)" (click)="registerForExam(e.id)">Prijavi ispit</button>
+          <button *ngIf="authService.isStudent() && isRegistered(e.id)" (click)="cancelRegistration(e.id)">Odjavi ispit</button>
+
+          <!-- Profesor/admin akcije -->
+          <button *ngIf="authService.isAdmin() || authService.isProfessor()" (click)="viewRegistrations(e)">Prijavljeni</button>
+          <button *ngIf="authService.isAdmin() || authService.isProfessor()" (click)="openForm(e)">Izmeni</button>
+          <button *ngIf="authService.isAdmin() || authService.isProfessor()" (click)="delete(e.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,48 @@
+<div class="container">
+  <h2>Moj profil</h2>
+  <div *ngIf="loading">Učitavanje...</div>
+
+  <div *ngIf="profile && !loading" class="profile-card">
+    <div class="profile-row" *ngIf="authService.isStudent()">
+      <span class="label">Broj indeksa:</span>
+      <span>{{ profile.indexNo }}</span>
+    </div>
+    <div class="profile-row">
+      <span class="label">Ime i prezime:</span>
+      <span>{{ profile.name || profile.fullName }}</span>
+    </div>
+    <div class="profile-row">
+      <span class="label">Email:</span>
+      <span>{{ profile.email }}</span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isStudent()">
+      <span class="label">Status:</span>
+      <span class="badge">{{ profile.status }}</span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isProfessor()">
+      <span class="label">Uloga:</span>
+      <span class="badge">{{ profile.role }}</span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isStudent()">
+      <span class="label">Program:</span>
+      <span>{{ profile.programName }}</span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isStudent()">
+      <span class="label">Prosečna ocena (GPA):</span>
+      <span class="badge">{{ gpa ? (gpa | number:'1.2-2') : 'Nema ocena' }}</span>
+    </div>
+
+    <div class="profile-row" *ngIf="authService.isProfessor() && myPrograms.length > 0">
+      <span class="label">Programi:</span>
+      <span>
+        <span *ngFor="let p of myPrograms; let last = last">{{ p.name }}{{ last ? '' : ', ' }}</span>
+      </span>
+    </div>
+    <div class="profile-row" *ngIf="authService.isProfessor() && myCourses.length > 0">
+      <span class="label">Predmeti:</span>
+      <span>
+        <span *ngFor="let c of myCourses; let last = last">{{ c.name }}{{ last ? '' : ', ' }}</span>
+      </span>
+    </div>
+  </div>
+</div>

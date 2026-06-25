@@ -1,0 +1,12 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>🎓 FTN</h2>
+    <p class="subtitle">Prijavite se na sistem</p>
+
+    <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+    <input [(ngModel)]="form.username" placeholder="Korisničko ime" />
+    <input [(ngModel)]="form.password" type="password" placeholder="Lozinka" />
+    <button (click)="login()">Prijavi se</button>
+  </div>
+</div>

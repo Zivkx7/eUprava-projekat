@@ -1,0 +1,10 @@
+.grade-box {
+  background: #f0f0f0;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 300px;
+}
