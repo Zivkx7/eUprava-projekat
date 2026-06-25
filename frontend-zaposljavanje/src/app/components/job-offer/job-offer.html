@@ -1,0 +1,46 @@
+<div class="container">
+  <h2>Ponude za posao / praksu</h2>
+  <button *ngIf="canManage()" (click)="openForm()">+ Objavi ponudu</button>
+
+  <div class="filter">
+    <input [(ngModel)]="searchQuery" placeholder="Pretraga (naziv ili lokacija)" />
+    <button (click)="search()">Pretraži</button>
+  </div>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Objavi' }} ponudu</h3>
+    <input [(ngModel)]="form.title" placeholder="Naziv pozicije" />
+    <textarea [(ngModel)]="form.description" placeholder="Opis posla" rows="3"></textarea>
+    <input [(ngModel)]="form.location" placeholder="Lokacija rada" />
+    <select *ngIf="authService.isAdmin()" [(ngModel)]="form.employerId">
+      <option value="">-- Odaberi poslodavca --</option>
+      <option *ngFor="let e of employers" [value]="e.id">{{ e.name }}</option>
+    </select>
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Pozicija</th>
+        <th>Opis</th>
+        <th>Lokacija</th>
+        <th>Poslodavac</th>
+        <th *ngIf="canManage()">Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of offers">
+        <td>{{ o.title }}</td>
+        <td>{{ o.description }}</td>
+        <td>{{ o.location }}</td>
+        <td>{{ o.employerName }}</td>
+        <td *ngIf="canManage()">
+          <button (click)="openForm(o)">Izmeni</button>
+          <button (click)="delete(o.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

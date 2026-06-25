@@ -1,0 +1,12 @@
+.form-card label {
+  font-size: 14px;
+  color: #555;
+}
+
+.form-card .info {
+  font-size: 13px;
+  color: #00796b;
+  background: #e0f2f1;
+  padding: 8px 12px;
+  border-radius: 4px;
+}

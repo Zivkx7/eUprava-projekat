@@ -1,0 +1,16 @@
+<div class="container">
+  <h2>Sajam zapošljavanja</h2>
+  <button *ngIf="authService.isCandidate()" (click)="checkIn()">+ Prijavi se na sajam (generiši QR)</button>
+
+  <div class="checkin-grid">
+    <div *ngFor="let c of checkIns" class="checkin-card">
+      <p><strong>{{ c.candidateName }}</strong></p>
+      <img *ngIf="c.qrImageBase64" [src]="c.qrImageBase64" alt="QR kod" />
+      <p class="token">{{ c.qrCode }}</p>
+      <p class="time">{{ c.time }}</p>
+      <button (click)="delete(c.id)">Obriši</button>
+    </div>
+  </div>
+
+  <p *ngIf="checkIns.length === 0" class="empty">Nema prijava na sajam.</p>
+</div>

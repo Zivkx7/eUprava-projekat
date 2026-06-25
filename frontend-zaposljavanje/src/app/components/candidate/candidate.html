@@ -1,0 +1,38 @@
+<div class="container">
+  <h2>Kandidati</h2>
+  <button *ngIf="authService.isAdmin()" (click)="openForm()">+ Dodaj kandidata</button>
+
+  <div class="filter">
+    <input [(ngModel)]="searchName" placeholder="Pretraga po imenu" />
+    <button (click)="search()">Pretraži</button>
+  </div>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Izmeni' : 'Dodaj' }} kandidata</h3>
+    <input [(ngModel)]="form.fullName" placeholder="Ime i prezime" />
+    <input [(ngModel)]="form.email" placeholder="Email (za prijavu)" />
+    <input *ngIf="!editingId" [(ngModel)]="form.password" type="password" placeholder="Lozinka naloga" />
+    <button (click)="save()">Sačuvaj</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Ime i prezime</th>
+        <th>Email</th>
+        <th *ngIf="authService.isAdmin()">Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of candidates">
+        <td>{{ c.fullName }}</td>
+        <td>{{ c.email }}</td>
+        <td *ngIf="authService.isAdmin()">
+          <button (click)="openForm(c)">Izmeni</button>
+          <button (click)="delete(c.id)">Obriši</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

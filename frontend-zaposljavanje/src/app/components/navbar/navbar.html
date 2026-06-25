@@ -1,0 +1,19 @@
+<nav class="navbar">
+  <div class="navbar-brand">💼 Služba za zapošljavanje</div>
+  <div class="navbar-links" *ngIf="isLoggedIn()">
+    <a routerLink="/home" routerLinkActive="active">Početna</a>
+    <a *ngIf="authService.isAdmin()" routerLink="/employers" routerLinkActive="active">Poslodavci</a>
+    <a routerLink="/job-offers" routerLinkActive="active">Ponude</a>
+    <a *ngIf="authService.isAdmin() || authService.isEmployer()" routerLink="/candidates" routerLinkActive="active">Kandidati</a>
+    <a *ngIf="authService.isAdmin() || authService.isCandidate()" routerLink="/education-records" routerLinkActive="active">Obrazovanje</a>
+    <a routerLink="/applications" routerLinkActive="active">Prijave</a>
+    <a *ngIf="authService.isAdmin() || authService.isEmployer()" routerLink="/interviews" routerLinkActive="active">Intervjui</a>
+    <a *ngIf="authService.isAdmin() || authService.isEmployer()" routerLink="/recommendations" routerLinkActive="active">Rang lista</a>
+    <a *ngIf="authService.isAdmin() || authService.isCandidate()" routerLink="/fair-checkins" routerLinkActive="active">Sajam</a>
+    <a routerLink="/profile" routerLinkActive="active">Moj profil</a>
+  </div>
+  <div class="navbar-right" *ngIf="isLoggedIn()">
+    <span class="role-badge">{{ getRole() }}</span>
+    <button (click)="logout()">Odjavi se</button>
+  </div>
+</nav>

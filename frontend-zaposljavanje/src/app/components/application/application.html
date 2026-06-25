@@ -1,0 +1,41 @@
+<div class="container">
+  <h2>Prijave</h2>
+  <button *ngIf="authService.isCandidate()" (click)="showForm = !showForm">+ Prijavi se na ponudu</button>
+
+  <div *ngIf="showForm && authService.isCandidate()" class="form-card">
+    <h3>Nova prijava</h3>
+    <select [(ngModel)]="selectedOfferId">
+      <option value="">-- Odaberi ponudu --</option>
+      <option *ngFor="let o of offers" [value]="o.id">{{ o.title }} ({{ o.location }})</option>
+    </select>
+    <button (click)="apply()">Prijavi se</button>
+    <button (click)="showForm = false">Otkaži</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Kandidat</th>
+        <th>Ponuda</th>
+        <th>Status</th>
+        <th>Datum</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of applications">
+        <td>{{ a.candidateName }}</td>
+        <td>{{ a.jobOfferTitle }}</td>
+        <td><span class="badge" [ngClass]="a.status">{{ a.status }}</span></td>
+        <td>{{ a.createdAt }}</td>
+        <td>
+          <select *ngIf="authService.isAdmin() || authService.isEmployer()"
+                  [ngModel]="a.status" (ngModelChange)="changeStatus(a, $event)">
+            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+          </select>
+          <button *ngIf="authService.isCandidate()" (click)="withdraw(a.id)">Povuci</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
