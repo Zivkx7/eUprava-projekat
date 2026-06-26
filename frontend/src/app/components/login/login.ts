@@ -14,6 +14,8 @@ import { EmployeeService } from '../../services/employee';
   styleUrls: ['./login.css']
 })
 export class Login {
+  private readonly otherAppUrl = 'http://localhost:4201/login';
+
   form = { username: '', password: '' };
   error = '';
 
@@ -23,6 +25,10 @@ export class Login {
     private employeeService: EmployeeService,
     private router: Router
   ) {}
+
+  switchApp() {
+    window.location.href = this.otherAppUrl;
+  }
 
   login() {
     if (!this.form.username || !this.form.password) {

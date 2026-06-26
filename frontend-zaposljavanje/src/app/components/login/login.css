@@ -51,6 +51,14 @@
   background-color: #00695c;
 }
 
+.login-card .switch-app-button {
+  background-color: #455a64;
+}
+
+.login-card .switch-app-button:hover {
+  background-color: #37474f;
+}
+
 .error-msg {
   background-color: #ffebee;
   color: #c62828;

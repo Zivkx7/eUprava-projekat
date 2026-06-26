@@ -11,11 +11,17 @@ import { AuthService } from '../../services/auth';
   styleUrls: ['./navbar.css']
 })
 export class NavbarComponent {
+  private readonly otherAppUrl = 'http://localhost:4201/login';
+
   constructor(public authService: AuthService, private router: Router) {}
 
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  switchApp() {
+    window.location.href = this.otherAppUrl;
   }
 
   getRole(): string {

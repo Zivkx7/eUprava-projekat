@@ -12,6 +12,7 @@
   </div>
   <div class="navbar-right" *ngIf="isLoggedIn()">
     <span class="role-badge">{{ getRole() }}</span>
+    <button class="switch-app-button" (click)="switchApp()">Služba za zapošljavanje</button>
     <button (click)="logout()">Odjavi se</button>
   </div>
 </nav>
